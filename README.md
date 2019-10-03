@@ -32,13 +32,15 @@ Note: this module currently does not support the customization of assessment tar
 
 ```terraform
 module "my-inspector-deployment" {
-  source                          = "USSBA/aws-inspector"
+  source                          = "USSBA/inspector/aws"
+  version                         = "1.0.1"
+  enabled                         = true
   name_prefix                     = "${terraform.workspace}"
   enable_scheduled_event          = true
   schedule_expression             = "cron(0 14 * * ? *)"
   assessment_duration             = "300"
   ruleset_cve                     = true
-  ruleset_cis                     = false
+  ruleset_cis                     = true
   ruleset_security_best_practices = true
   ruleset_network_reachability    = true
 }
