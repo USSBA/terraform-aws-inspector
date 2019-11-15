@@ -37,7 +37,7 @@ resource "aws_inspector_assessment_target" "assessment" {
 resource "aws_inspector_assessment_template" "assessment" {
   count              = local.enabled_count
   name               = "${var.name_prefix}-assessment-template"
-  target_arn         = "${aws_inspector_assessment_target.assessment[0].arn}"
+  target_arn         = var.enabled ? aws_inspector_assessment_target.assessment[0].arn : ""
   duration           = var.assessment_duration
   rules_package_arns = local.assessment_ruleset
 }
