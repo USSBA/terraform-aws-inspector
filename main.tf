@@ -4,14 +4,38 @@ terraform {
     aws = "~> 2.30"
   }
 }
+
+data "aws_region" "current_region" {}
+data aws_caller_identity "current_identity" {}
+
+
 locals {
   enabled_count   = var.enabled ? 1 : 0
   scheduled_count = var.enable_scheduled_event && var.enabled ? 1 : 0
+  ruleset_cis_arn = {
+    "eu-west-1" = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-sJBhCr0F"
+    "us-east-1" = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8"
+  }
+  ruleset_cve_arn = {
+    "eu-west-1" = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-ubA5XvBh"
+    "us-east-1" = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7"
+  }
+
+  ruleset_network_reachability_arn = {
+    "eu-west-1" = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SPzU33xe"
+    "us-east-1" = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
+  }
+
+  ruleset_security_best_practices_arn = {
+    "eu-west-1" = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SnojL3Z6"
+    "us-east-1" = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
+  }
+
   assessment_ruleset = compact([
-    var.ruleset_cis ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8" : "",
-    var.ruleset_cve ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7" : "",
-    var.ruleset_network_reachability ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd" : "",
-    var.ruleset_security_best_practices ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q" : "",
+    var.ruleset_cis ? local.ruleset_cis_arn[data.aws_region.current_region.name] : "",
+    var.ruleset_cve ? local.ruleset_cve_arn[data.aws_region.current_region.name] : "",
+    var.ruleset_network_reachability ? local.ruleset_network_reachability_arn[data.aws_region.current_region.name] : "",
+    var.ruleset_security_best_practices ? local.ruleset_security_best_practices_arn[data.aws_region.current_region.name] : "",
     ]
   )
 }
@@ -82,4 +106,40 @@ resource "aws_cloudwatch_event_target" "inspector_event_target" {
   rule     = aws_cloudwatch_event_rule.inspector_event_schedule[0].name
   arn      = aws_inspector_assessment_template.assessment[0].arn
   role_arn = aws_iam_role.inspector_event_role[0].arn
+}
+
+data "aws_iam_policy_document" "sns-topic-policy" {
+  policy_id = "${var.name_prefix}-inspector-sns-publish-policy"
+
+  statement {
+    actions = ["SNS:Publish"]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["inspector.amazonaws.com"]
+    }
+
+    resources = ["arn:aws:sns:${data.aws_region.current_region.name}:${data.aws_caller_identity.current_identity.account_id}:${var.name_prefix}-inspector-topic"]
+
+    sid = "${var.name_prefix}-inspector-sns-publish-statement"
+  }
+}
+
+resource "aws_sns_topic" "sns_topic" {
+  name   = "${var.name_prefix}-inspector-topic"
+  policy = data.aws_iam_policy_document.sns-topic-policy.json
+}
+
+
+resource "null_resource" "inspector_sns" {
+
+  provisioner "local-exec" {
+    command = "aws --region ${data.aws_region.current_region.name} inspector subscribe-to-event --resource-arn ${aws_inspector_assessment_template.assessment[0].arn} --event FINDING_REPORTED --topic-arn ${aws_sns_topic.sns_topic.arn}"
+  }
+
+  depends_on = [
+    aws_sns_topic.sns_topic
+  ]
 }
