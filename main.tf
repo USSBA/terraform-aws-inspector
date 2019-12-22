@@ -8,7 +8,6 @@ terraform {
 data "aws_region" "current_region" {}
 data aws_caller_identity "current_identity" {}
 
-
 locals {
   enabled_count   = var.enabled ? 1 : 0
   scheduled_count = var.enable_scheduled_event && var.enabled ? 1 : 0
@@ -43,13 +42,9 @@ locals {
 data "aws_iam_policy_document" "inspector_event_role_policy" {
   count = local.scheduled_count
   statement {
-    sid = "StartAssessment"
-    actions = [
-      "inspector:StartAssessmentRun",
-    ]
-    resources = [
-      "*"
-    ]
+    sid       = "StartAssessment"
+    actions   = ["inspector:StartAssessmentRun"]
+    resources = ["*"]
   }
 }
 
@@ -68,7 +63,7 @@ resource "aws_inspector_assessment_template" "assessment" {
 
 resource "aws_iam_role" "inspector_event_role" {
   count = local.scheduled_count
-  name  = "${var.name_prefix}-inspector-event-role"
+  name  = "${var.name_prefix}-inspector-event"
 
   assume_role_policy = <<EOF
 {
@@ -108,38 +103,49 @@ resource "aws_cloudwatch_event_target" "inspector_event_target" {
   role_arn = aws_iam_role.inspector_event_role[0].arn
 }
 
-data "aws_iam_policy_document" "sns-topic-policy" {
+data "aws_iam_policy_document" "sns_topic_policy" {
   policy_id = "${var.name_prefix}-inspector-sns-publish-policy"
-
   statement {
     actions = ["SNS:Publish"]
-
-    effect = "Allow"
-
+    effect  = "Allow"
     principals {
       type        = "Service"
       identifiers = ["inspector.amazonaws.com"]
     }
-
-    resources = ["arn:aws:sns:${data.aws_region.current_region.name}:${data.aws_caller_identity.current_identity.account_id}:${var.name_prefix}-inspector-topic"]
+    resources = [
+    "arn:aws:sns:${data.aws_region.current_region.name}:${data.aws_caller_identity.current_identity.account_id}:${var.name_prefix}-inspector"]
 
     sid = "${var.name_prefix}-inspector-sns-publish-statement"
   }
+
 }
 
 resource "aws_sns_topic" "sns_topic" {
-  name   = "${var.name_prefix}-inspector-topic"
-  policy = data.aws_iam_policy_document.sns-topic-policy.json
+  name                             = "${var.name_prefix}-inspector"
+  policy                           = data.aws_iam_policy_document.sns_topic_policy.json
+  lambda_failure_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current_identity.account_id}:role/SNSFailureFeedback"
+  lambda_success_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current_identity.account_id}:role/SNSSuccessFeedback"
 }
 
+resource "aws_sns_topic_subscription" "lambda_findings_processor" {
+  endpoint               = aws_lambda_function.lambda_function.arn
+  protocol               = "lambda"
+  topic_arn              = aws_sns_topic.sns_topic.arn
+  endpoint_auto_confirms = true
+  depends_on = [
+  aws_lambda_function.lambda_function]
+}
+
+resource "aws_lambda_permission" "lambda_findings_processor_permission" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_function.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.sns_topic.arn
+}
 
 resource "null_resource" "inspector_sns" {
-
   provisioner "local-exec" {
     command = "aws --region ${data.aws_region.current_region.name} inspector subscribe-to-event --resource-arn ${aws_inspector_assessment_template.assessment[0].arn} --event FINDING_REPORTED --topic-arn ${aws_sns_topic.sns_topic.arn}"
   }
-
-  depends_on = [
-    aws_sns_topic.sns_topic
-  ]
+  depends_on = [aws_sns_topic.sns_topic]
 }

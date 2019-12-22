@@ -42,3 +42,37 @@ variable "schedule_expression" {
   description = "AWS Schedule Expression: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
   default     = "cron(0 14 ? * THU *)" # Run every Thursday at 2PM UTC/9AM EST/10AM EDT
 }
+
+variable "lambda_file_name" {
+  type        = string
+  description = "The name of lambda file which contain python code"
+  default     = "finding_processor"
+}
+
+variable "report_email_target" {
+  type        = list(string)
+  description = "Email address to which the AWS Inspector report will be sent via findingprocessor lambda function"
+}
+
+variable "lambda_env_variables" {
+  type        = map
+  description = "Map of lambda environment variables"
+}
+
+variable "lambda_runtime" {
+  type        = string
+  description = "Lambda runtime type and version"
+  default     = "python3.6"
+}
+
+variable "lambda_timeout" {
+  type        = number
+  description = "Lambda timeout in seconds"
+  default     = 10
+}
+
+variable "lambda_memory_size" {
+  type        = number
+  description = "Lambda memory size in MB"
+  default     = 128
+}

@@ -44,6 +44,8 @@ module "my-inspector-deployment" {
   ruleset_cis                     = true
   ruleset_security_best_practices = true
   ruleset_network_reachability    = true
+  report_email_target = ["email1@email.com", "email2@email.com"]
+  lambda_env_variables = {REPORT_EMAIL_TARGET = "email1@email.com"}
 }
 ```
 
