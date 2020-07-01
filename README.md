@@ -5,7 +5,7 @@ A terraform module to deploy [Amazon Inspector](https://docs.aws.amazon.com/insp
 ## Prerequisites
 
 * Amazon Inspector Agent [installed](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_installing-uninstalling-agents.html#install-linux) on desired EC2 instances.
-* Inspector Rule Set ARN's proper to AWS Region - [list](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html#eu-west-1)
+* [Amazon Inspector Region-Specific ARNs for rules packages](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html)
 
 ## Usage
 
