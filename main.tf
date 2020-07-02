@@ -1,9 +1,3 @@
-terraform {
-  required_version = "~> 0.12.9"
-  required_providers {
-    aws = "~> 2.30"
-  }
-}
 locals {
   enabled_count   = var.enabled ? 1 : 0
   scheduled_count = var.enable_scheduled_event && var.enabled ? 1 : 0
