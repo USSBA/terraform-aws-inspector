@@ -34,7 +34,7 @@ Note: this module currently does not support the customization of assessment tar
 ```terraform
 module "my-inspector-deployment" {
   source                          = "USSBA/inspector/aws"
-  version                         = "1.0.1"
+  version                         = "~> 2.0"
   enabled                         = true
   name_prefix                     = "${terraform.workspace}"
   enable_scheduled_event          = true
@@ -53,6 +53,10 @@ We welcome contributions.
 To contribute please read our [CONTRIBUTING](CONTRIBUTING.md) document.
 
 All contributions are subject to the license and in no way imply compensation for contributions.
+
+### Terraform 0.12
+
+Our code base now exists in Terraform 0.13 and we are halting new features in the Terraform 0.12 major version.  If you wish to make a PR or merge upstream changes back into 0.12, please submit a PR to the `terraform-0.12` branch.
 
 ## Code of Conduct
 
