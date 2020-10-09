@@ -1,13 +1,10 @@
 version: 2.1
 
 executors:
-  default:
+  terraform:
     docker:
-      - image: circleci/node
-  docker-awscli:
-    docker:
-      - image: ussba/cc-docker-git-aws
-  docker-poirot:
+    - image: hashicorp/terraform:light
+  poirot:
     docker:
       - image: ussba/poirot:3
 
@@ -22,18 +19,26 @@ commands:
 
 jobs:
   poirot:
-    executor: docker-poirot
+    executor: poirot
     steps:
     - poirotscan
   terraform-format-check:
-    docker:
-    - image: hashicorp/terraform:light
+    executor: terraform
     steps:
     - checkout
     - run:
         name: Check terraform formatting
         command: |
           terraform fmt -recursive -check
+  terraform-validation-check:
+    executor: terraform
+    steps:
+    - checkout
+    - run:
+        name: Configure a stub provider for testing
+        command: echo "provider \"aws\" { region = \"us-east-1\" } " > tmp_provider.tf
+    - run: terraform init -backend=false -input=false
+    - run: terraform validate
 
 workflows:
   version: 2
@@ -41,3 +46,4 @@ workflows:
     jobs:
     - poirot
     - terraform-format-check
+    - terraform-validation-check

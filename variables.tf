@@ -40,5 +40,5 @@ variable "ruleset_security_best_practices" {
 variable "schedule_expression" {
   type        = string
   description = "AWS Schedule Expression: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
-  default     = "cron(0 14 ? * THU *)" # Run every Thursday at 2PM UTC/9AM EST/10AM EDT
+  default     = "rate(7 days)"
 }
