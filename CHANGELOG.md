@@ -4,6 +4,10 @@
 
 ## Released Changes
 
+### 3.0.0
+
+* **Breaking** - Remove "enabled" flag and count on all resources; leverage module for_each instead
+
 ### 2.1.0
 
 * Default value for `schedule_expression` variable changed to a rate based expression
