@@ -21,7 +21,6 @@ Note: this module currently does not support the customization of assessment tar
 
 #### Optional
 
-* `enabled` - Default `true`; A way to disable the entire module. This works around terraform being unable to `count = 0` for a module, and is helpful for turning off a modules resources per terraform workspace.
 * `enable_scheduled_event` - Default `true`; A way to disable Inspector from running on a schedule
 * `schedule_expression` - Default `rate(7 days)`; How often to run an Inspector assessment. See [AWS Schedule Expression documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html) for more info on formatting.s
 * `assessment_duration` - Default `3600`; How long the assessment runs in seconds.
@@ -49,8 +48,9 @@ An example showing a customized schedule and rulesets:
 ```terraform
 module "my-inspector-deployment" {
   source                          = "USSBA/inspector/aws"
-  version                         = "~> 2.0"
+  version                         = "~> 3.0"
   name_prefix                     = "my-inspector"
+  enable_scheduled_event          = true
   schedule_expression             = "cron(0 14 * * ? *)"
   ruleset_cve                     = true
   ruleset_cis                     = false

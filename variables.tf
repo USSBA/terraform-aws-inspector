@@ -9,10 +9,6 @@ variable "enable_scheduled_event" {
   description = "Enable Cloudwatch Events to schedule an assessment"
   default     = true
 }
-variable "enabled" {
-  default     = true
-  description = "Set to false to disable all resources in this module.  A workaround for terraform<=0.12 having no mechanism for disabling modules between workspaces."
-}
 variable "name_prefix" {
   type        = string
   description = "Prefix for resource names that terraform will create"

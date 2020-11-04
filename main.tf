@@ -1,6 +1,5 @@
 locals {
-  enabled_count   = var.enabled ? 1 : 0
-  scheduled_count = var.enable_scheduled_event && var.enabled ? 1 : 0
+  scheduled_count = var.enable_scheduled_event ? 1 : 0
   assessment_ruleset = compact([
     var.ruleset_cis ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8" : "",
     var.ruleset_cve ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7" : "",
@@ -24,14 +23,12 @@ data "aws_iam_policy_document" "inspector_event_role_policy" {
 }
 
 resource "aws_inspector_assessment_target" "assessment" {
-  count = local.enabled_count
-  name  = "${var.name_prefix}-assessment-target"
+  name = "${var.name_prefix}-assessment-target"
 }
 
 resource "aws_inspector_assessment_template" "assessment" {
-  count              = local.enabled_count
   name               = "${var.name_prefix}-assessment-template"
-  target_arn         = var.enabled ? aws_inspector_assessment_target.assessment[0].arn : ""
+  target_arn         = aws_inspector_assessment_target.assessment.arn
   duration           = var.assessment_duration
   rules_package_arns = local.assessment_ruleset
 }
@@ -74,6 +71,6 @@ resource "aws_cloudwatch_event_rule" "inspector_event_schedule" {
 resource "aws_cloudwatch_event_target" "inspector_event_target" {
   count    = local.scheduled_count
   rule     = aws_cloudwatch_event_rule.inspector_event_schedule[0].name
-  arn      = aws_inspector_assessment_template.assessment[0].arn
+  arn      = aws_inspector_assessment_template.assessment.arn
   role_arn = aws_iam_role.inspector_event_role[0].arn
 }
