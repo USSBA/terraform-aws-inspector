@@ -4,6 +4,10 @@
 
 ## Released Changes
 
+### 3.1.0
+
+* Support for Terraform 0.13 and up to (but not including) 1.0
+
 ### 3.0.0
 
 * **Breaking** - Remove "enabled" flag and count on all resources; leverage module for_each instead
