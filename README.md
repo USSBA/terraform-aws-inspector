@@ -9,7 +9,7 @@ A terraform module to deploy [Amazon Inspector](https://docs.aws.amazon.com/insp
 
 ## Usage
 
-Use 2.x versions for Terraform 0.13 and 1.x versions for Terraform 0.12.
+Module version 3.1 supports Terraform 0.13 up to (but not including) 1.0 (which is yet to be released at the). Module version 1.x supports Terraform 0.12.
 
 Note: this module currently does not support the customization of assessment targets. All EC2 instances with the AWS Inspector agent installed will be included on an assessment.
 
