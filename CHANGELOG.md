@@ -19,7 +19,7 @@
 
 ### 2.0.0
 
-* **Terraform 0.13**
+* **Breaking** - Terraform 0.13 is now required.
 
 * Readme Updates
 * Reordering Variables alphabetically [airmonitor]
