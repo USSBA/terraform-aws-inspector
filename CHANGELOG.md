@@ -6,6 +6,10 @@
 
 ### 3.1.0
 
+* Support for Terraform 1.0+
+
+### 3.1.0
+
 * Support for Terraform 0.13 and up to (but not including) 1.0
 
 ### 3.0.0
