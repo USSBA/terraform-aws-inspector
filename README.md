@@ -28,6 +28,10 @@ Note: this module currently does not support the customization of assessment tar
 * `ruleset_cis` - Default `true`; Includes the CIS Benchmarks [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rule-packages.html) in the Inspector assessment.
 * `ruleset_security_best_practices` - Default `true`; Includes the AWS Security Best Practices [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rule-packages.html) in the Inspector assessment.
 * `ruleset_network_reachability` - Default `true`; Includes the Network Reachability [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rule-packages.html) in the Inspector assessment.
+* `ruleset_cve_arn` - Default `arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7`; ARN for Common Vulnerabilities and Exposures [Ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html)
+* `ruleset_cis_arn` - Default `arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8`; ARN for CIS Operating System Security Configuration Benchmarks [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html)
+* `ruleset_network_reachability_arn` - Default `arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd`; ARN for AWS Network Reachability [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html)
+* `ruleset_security_best_practices_arn` - Default `arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q`; ARN for AWS Security Best Practices [ruleset](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html)
 
 ### Simple Example
 
@@ -56,6 +60,19 @@ module "my-inspector-deployment" {
   ruleset_cis                     = false
   ruleset_security_best_practices = true
   ruleset_network_reachability    = false
+}
+```
+An example showcasing the ability to pass ruleset ARN's for use in `eu-west-1` region.
+
+```terraform
+module "my-inspector-deployment" {
+  source                              = "USSBA/inspector/aws"
+  version                             = "~> 3.0"
+  name_prefix                         = "my-inspector"
+  ruleset_cis_arn                     = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-sJBhCr0F"
+  ruleset_cve_arn                     = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-ubA5XvBh"
+  ruleset_network_reachability_arn    = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SPzU33xe"
+  ruleset_security_best_practices_arn = "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SnojL3Z6"
 }
 ```
 

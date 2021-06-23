@@ -33,6 +33,26 @@ variable "ruleset_security_best_practices" {
   description = "Enable AWS Security Best Practices Ruleset"
   default     = true
 }
+variable "ruleset_cve_arn" {
+  type        = string
+  description = "ARN for Common Vulnerabilities and Exposures Ruleset: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html"
+  default     = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7"
+}
+variable "ruleset_cis_arn" {
+  type        = string
+  description = "ARN for CIS Operating System Security Configuration Benchmarks Ruleset: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html"
+  default     = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8"
+}
+variable "ruleset_network_reachability_arn" {
+  type        = string
+  description = "ARN for AWS Network Reachability Ruleset: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html"
+  default     = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
+}
+variable "ruleset_security_best_practices_arn" {
+  type        = string
+  description = "ARN for AWS Security Best Practices Ruleset: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_rules-arns.html"
+  default     = "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
+}
 variable "schedule_expression" {
   type        = string
   description = "AWS Schedule Expression: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
