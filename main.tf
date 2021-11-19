@@ -17,11 +17,11 @@ locals {
       "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8",
       "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-sJBhCr0F",
     },
-    "network_reachability": {
+    "network_reachability" : {
       "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd",
       "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SPzU33xe",
     },
-    "security_best_practices": {
+    "security_best_practices" : {
       "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
       "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SnojL3Z6"
     },
