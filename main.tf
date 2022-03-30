@@ -1,13 +1,34 @@
 locals {
   scheduled_count = var.enable_scheduled_event ? 1 : 0
   assessment_ruleset = compact([
-    var.ruleset_cis ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8" : "",
-    var.ruleset_cve ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7" : "",
-    var.ruleset_network_reachability ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd" : "",
-    var.ruleset_security_best_practices ? "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q" : "",
+    var.ruleset_cis ? local.rules["cis"][data.aws_region.current.name] : "",
+    var.ruleset_cve ? local.rules["cve"][data.aws_region.current.name] : "",
+    var.ruleset_network_reachability ? local.rules["network_reachability"][data.aws_region.current.name] : "",
+    var.ruleset_security_best_practices ? local.rules["security_best_practices"][data.aws_region.current.name] : "",
     ]
   )
+
+  rules = {
+    "cve" : {
+      "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-gEjTy7T7",
+      "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-ubA5XvBh",
+    },
+    "cis" : {
+      "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-rExsr2X8",
+      "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-sJBhCr0F",
+    },
+    "network_reachability" : {
+      "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd",
+      "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SPzU33xe",
+    },
+    "security_best_practices" : {
+      "us-east-1" : "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
+      "eu-west-1" : "arn:aws:inspector:eu-west-1:357557129151:rulespackage/0-SnojL3Z6"
+    },
+  }
 }
+
+data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "inspector_event_role_policy" {
   count = local.scheduled_count
