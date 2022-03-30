@@ -4,6 +4,10 @@
 
 ## Released Changes
 
+### 3.1.1
+
+* Support for eu-west-1 region
+
 ### 3.1.0
 
 * Support for Terraform 1.0+
