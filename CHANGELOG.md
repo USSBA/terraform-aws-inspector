@@ -4,6 +4,11 @@
 
 ## Released Changes
 
+### 4.0.0
+
+- ** BREAKING CHANGES **
+  - AWS Provider bumped to `>= 4.0, < 5.0`
+
 ### 3.2.1
 
 * Support for eu-west-1 region
