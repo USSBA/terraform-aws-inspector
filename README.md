@@ -1,5 +1,8 @@
 # terraform-aws-inspector
 
+## **DEPRECATION NOTICE**
+**THE USSBA WILL BE DEPRECATING THIS MODULE IN THE NEXT 6 MONTHS AND WILL NO LONGER BE MAKING UPDATES TO THIS MODULE.**
+
 A terraform module to deploy [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html)
 
 ## Prerequisites
